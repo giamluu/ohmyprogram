@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     MediaPlayer mediaPlayer;
 
     NotificationManager notificationManager;
-    List<Track> tracks, listMusic;
+    List<Track> tracks;
 
     int position = 0;
     boolean isPlay = false;
@@ -101,16 +101,12 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     private void populateTrack() {
         tracks = new ArrayList<>();
 
-        tracks.add(new Track("Track1", "Artist1", R.drawable.anime1));
-        tracks.add(new Track("Track2", "Artist2", R.drawable.anime2));
-        tracks.add(new Track("Track3", "Artist3", R.drawable.anime3));
-        tracks.add(new Track("Track4", "Artist4", R.drawable.anime4));
+        tracks.add(new Track("Cánh hồng phai", "Artist1", R.drawable.anime1, R.raw.canhhongphai));
+        tracks.add(new Track("Cho anh say đắm", "Artist2", R.drawable.anime2, R.raw.choanhsay));
+        tracks.add(new Track("Có chắc đây là yêu", "Artist3", R.drawable.anime3, R.raw.cochacyeuladay));
+        tracks.add(new Track("Em ơi lên phố", "Artist4", R.drawable.anime4, R.raw.emoilenpho));
+        tracks.add(new Track("Nếu ta ngược lối", "Artist4", R.drawable.anime4, R.raw.neutanguocloi));
 
-        listMusic = new ArrayList<>();
-        listMusic.add(new Track("cho anh say", "Artist1", R.raw.choanhsay));
-        listMusic.add(new Track("co chac yeu la day", "Artist2", R.raw.cochacyeuladay));
-        listMusic.add(new Track("cho anh say 2", "Artist1", R.raw.choanhsay));
-        listMusic.add(new Track("co chac yeu la day 2", "Artist2", R.raw.cochacyeuladay));
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -143,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         isPlay = true;
         currentTime = 0;
         mediaPlayer.release();
-        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        mediaPlayer = MediaPlayer.create(MainActivity.this, tracks.get(position).getUrlMusic());
         mediaPlayer.start();
     }
 
@@ -154,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         title.setText(tracks.get(position).getTitle());
         isPlay = true;
 
-        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        mediaPlayer = MediaPlayer.create(MainActivity.this, tracks.get(position).getUrlMusic());
         if (currentTime == 0)
             mediaPlayer.start();
         else {
@@ -186,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         isPlay = true;
         mediaPlayer.release();
         currentTime = 0;
-        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        mediaPlayer = MediaPlayer.create(MainActivity.this, tracks.get(position).getUrlMusic());
         mediaPlayer.start();
     }
 
