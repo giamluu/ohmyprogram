@@ -53,4 +53,14 @@
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toEndOf="@+id/bt_play"
         app:srcCompat="@drawable/ic_skip_next_black_24dp" />
+
+    <ListView
+        android:layout_width="409dp"
+        android:layout_height="521dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/ListMusic"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

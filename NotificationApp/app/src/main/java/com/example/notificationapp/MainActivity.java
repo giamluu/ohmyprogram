@@ -8,16 +8,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.notificationapp.Service.OnClearFromRecentService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +29,16 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
 
     private ImageButton bt_play, bt_previous, bt_next;
     private TextView title;
+    private ListView Musics;
+
+    MediaPlayer mediaPlayer;
 
     NotificationManager notificationManager;
-    List<Track> tracks;
+    List<Track> tracks, listMusic;
 
     int position = 0;
     boolean isPlay = false;
+    int currentTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         bt_play = findViewById(R.id.bt_play);
         bt_next = findViewById(R.id.bt_next);
         title = findViewById(R.id.tv_title);
+        Musics = findViewById(R.id.ListMusic);
 
         populateTrack();
 
@@ -96,6 +105,12 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         tracks.add(new Track("Track2", "Artist2", R.drawable.anime2));
         tracks.add(new Track("Track3", "Artist3", R.drawable.anime3));
         tracks.add(new Track("Track4", "Artist4", R.drawable.anime4));
+
+        listMusic = new ArrayList<>();
+        listMusic.add(new Track("cho anh say", "Artist1", R.raw.choanhsay));
+        listMusic.add(new Track("co chac yeu la day", "Artist2", R.raw.cochacyeuladay));
+        listMusic.add(new Track("cho anh say 2", "Artist1", R.raw.choanhsay));
+        listMusic.add(new Track("co chac yeu la day 2", "Artist2", R.raw.cochacyeuladay));
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -126,6 +141,10 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         title.setText(tracks.get(position).getTitle());
         bt_play.setImageResource(R.drawable.ic_pause_black_24dp);
         isPlay = true;
+        currentTime = 0;
+        mediaPlayer.release();
+        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        mediaPlayer.start();
     }
 
     public void onTrackPlay() {
@@ -135,6 +154,15 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         title.setText(tracks.get(position).getTitle());
         isPlay = true;
 
+        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        if (currentTime == 0)
+            mediaPlayer.start();
+        else {
+            mediaPlayer.seekTo(currentTime);
+            mediaPlayer.start();
+        }
+
+
     }
 
     public void onTrackPause() {
@@ -143,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         bt_play.setImageResource(R.drawable.ic_play_arrow_black_24dp);
         title.setText(tracks.get(position).getTitle());
         isPlay = false;
+        mediaPlayer.pause();
+        currentTime = mediaPlayer.getCurrentPosition();
+        Log.i("giam.luu",mediaPlayer.getCurrentPosition()+"");
     }
 
     @Override
@@ -153,7 +184,10 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         title.setText(tracks.get(position).getTitle());
         bt_play.setImageResource(R.drawable.ic_pause_black_24dp);
         isPlay = true;
-
+        mediaPlayer.release();
+        currentTime = 0;
+        mediaPlayer = MediaPlayer.create(MainActivity.this, listMusic.get(position).getImage());
+        mediaPlayer.start();
     }
 
     @Override
