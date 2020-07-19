@@ -35,7 +35,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PlayAble {
 
-    private ImageButton bt_play, bt_previous, bt_next;
+    private ImageButton bt_play, bt_previous, bt_next, activityList;
     private TextView title, currentTimeMusic, musicTime;
     private ImageView pictureMusic;
     private SeekBar seekMusic;
@@ -63,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         musicTime        = findViewById(R.id.timeMusic);
         seekMusic        = findViewById(R.id.seekPlay);
         pictureMusic     = findViewById(R.id.pictureMusic);
+        activityList     = findViewById(R.id.activityList);
 
-        animation = AnimationUtils.loadAnimation(this,R.anim.rotateanim);
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotateanim);
 
         populateTrack();
 
@@ -116,6 +117,16 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
                 onTrackNext();
             }
         });
+
+        //activity list music
+        activityList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ActivityListMusic.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void createChannel() {
