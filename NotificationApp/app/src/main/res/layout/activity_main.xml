@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bt_play"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="36dp"
         android:gravity="center"
         android:text="title"
         android:textSize="25sp"
@@ -54,13 +54,60 @@
         app:layout_constraintStart_toEndOf="@+id/bt_play"
         app:srcCompat="@drawable/ic_skip_next_black_24dp" />
 
-    <ListView
-        android:layout_width="409dp"
-        android:layout_height="521dp"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/ListMusic"
+    <SeekBar
+        android:id="@+id/seekPlay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_title"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/currentTimeMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginBottom="15dp"
+        android:text="00:00"
+        app:layout_constraintBottom_toTopOf="@+id/seekPlay"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/timeMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="17dp"
+        android:text="00:00"
+        app:layout_constraintBottom_toTopOf="@+id/seekPlay"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/pictureMusic"
+        android:layout_width="218dp"
+        android:layout_height="218dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="108dp"
+        android:cropToPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_music" />
+
+    <ImageButton
+        android:id="@+id/activityList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_get" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
