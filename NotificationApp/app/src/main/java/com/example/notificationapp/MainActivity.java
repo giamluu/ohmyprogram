@@ -41,14 +41,15 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     private SeekBar seekMusic;
     Animation animation;
 
-    MediaPlayer mediaPlayer = new MediaPlayer();
+    static MediaPlayer mediaPlayer = new MediaPlayer();
 
     NotificationManager notificationManager;
-    List<Track> tracks;
+    public static List<Track> tracks;
 
     int position = 0;
     boolean isPlay = false;
-    int currentTime = 0;
+    static int currentTime = 0;
+    public static boolean isSend = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,15 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
             startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
         }
 
+
+        if (isSend) {
+            Intent intent = getIntent();
+            position = intent.getIntExtra("position", position);
+            onTrackPlay();
+            isSend = false;
+            //Log.i("giam", position+"");
+        }
+
         //set seekBar time
         seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                currentTime = seekMusic.getProgress();
                 mediaPlayer.seekTo(seekMusic.getProgress());
             }
         });
@@ -198,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     public void onTrackPlay() {
 
         RotateAnimation(16000);
+        mediaPlayer.release();
 
         CreateNotification.CreateNotification(MainActivity.this, tracks.get(position), R.drawable.ic_pause_black_24dp, position, tracks.size() - 1);
         bt_play.setImageResource(R.drawable.ic_pause_black_24dp);
@@ -208,12 +220,9 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
 
         setTimeDuration();
         pictureMusic.setImageResource(tracks.get(position).getImage());
-        if (currentTime == 0)
-            mediaPlayer.start();
-        else {
-            mediaPlayer.seekTo(currentTime);
-            mediaPlayer.start();
-        }
+
+        mediaPlayer.seekTo(currentTime);
+        mediaPlayer.start();
         updateTimeSong();
     }
 
