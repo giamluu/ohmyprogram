@@ -35,21 +35,27 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PlayAble {
 
-    private ImageButton bt_play, bt_previous, bt_next, activityList;
+    private ImageButton bt_play, bt_previous, bt_next, activityList, randomMusic, loopMusic;
     private TextView title, currentTimeMusic, musicTime;
     private ImageView pictureMusic;
     private SeekBar seekMusic;
-    Animation animation;
+
+
+    private Animation animation;
+    private RandomMusic isRandomMusic;
 
     static MediaPlayer mediaPlayer = new MediaPlayer();
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+
     NotificationManager notificationManager;
     public static List<Track> tracks;
+    private final int UNLOOP = 0, LOOP = 1, LOOPONE = 2;
 
     int position = 0;
-    boolean isPlay = false;
-    static int currentTime = 0;
-    public static boolean isSend = false;
+    boolean isPlay = false, isRandom = false;
+    static int currentTime = 0, isLoopMusic = 0;
+    public static boolean isSend = false, isTouchSeekBar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +71,15 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         seekMusic        = findViewById(R.id.seekPlay);
         pictureMusic     = findViewById(R.id.pictureMusic);
         activityList     = findViewById(R.id.activityList);
+        randomMusic      = findViewById(R.id.randomMusic);
+        loopMusic        = findViewById(R.id.loopMusic);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.rotateanim);
 
         populateTrack();
+
+        isRandomMusic = new RandomMusic(tracks.size());
+        Log.i("giam",tracks.size()+"  size list music");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel();
@@ -79,29 +90,64 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
 
 
         if (isSend) {
+            currentTime = 0;
             Intent intent = getIntent();
             position = intent.getIntExtra("position", position);
             onTrackPlay();
             isSend = false;
-            //Log.i("giam", position+"");
         }
 
         //set seekBar time
         seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                currentTimeMusic.setText(simpleDateFormat.format(seekMusic.getProgress()));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                isTouchSeekBar = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 currentTime = seekMusic.getProgress();
                 mediaPlayer.seekTo(seekMusic.getProgress());
+                isTouchSeekBar = false;
+            }
+        });
+
+        //button Random
+        randomMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isRandom) {
+                    randomMusic.setBackgroundResource(R.drawable.unrandom);
+                    isRandom = false;
+                } else {
+                    randomMusic.setBackgroundResource(R.drawable.random);
+                    isRandom = true;
+                }
+            }
+        });
+
+        //Loop button
+        loopMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isLoopMusic == UNLOOP) {
+                    isLoopMusic = LOOP;
+                    loopMusic.setBackgroundResource(R.drawable.loop);
+                    //this is loop
+                } else if (isLoopMusic == LOOP) {
+                    isLoopMusic = LOOPONE;
+                    loopMusic.setBackgroundResource(R.drawable.loopone);
+                    //this is loop one
+                } else if (isLoopMusic == LOOPONE) {
+                    isLoopMusic = UNLOOP;
+                    loopMusic.setBackgroundResource(R.drawable.unloop);
+                    //this is unloop
+                }
             }
         });
 
@@ -187,9 +233,13 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
 
     public void onTrackPrevious() {
 
-        if (position > 0) {
+        if (position > 0 || isRandom) {
             RotateAnimation(16000);
-            position--;
+            if (isRandom) {
+                position = isRandomMusic.init(tracks.size());
+            } else {
+                position--;
+            }
             CreateNotification.CreateNotification(MainActivity.this, tracks.get(position), R.drawable.ic_pause_black_24dp, position, tracks.size() - 1);
             title.setText(tracks.get(position).getTitle());
             bt_play.setImageResource(R.drawable.ic_pause_black_24dp);
@@ -241,9 +291,12 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     @Override
     public void onTrackNext() {
 
-        if (position < tracks.size() - 1) {
+        if (position < tracks.size() - 1 || isRandom) {
             RotateAnimation(16000);
-            position++;
+            if (isRandom) {
+                position = isRandomMusic.init(tracks.size());
+            } else
+                position++;
             CreateNotification.CreateNotification(MainActivity.this, tracks.get(position), R.drawable.ic_pause_black_24dp, position, tracks.size() - 1);
             title.setText(tracks.get(position).getTitle());
             bt_play.setImageResource(R.drawable.ic_pause_black_24dp);
@@ -282,23 +335,24 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-                currentTimeMusic.setText(simpleDateFormat.format(mediaPlayer.getCurrentPosition()));
-                //update seekProgress
-                seekMusic.setProgress(mediaPlayer.getCurrentPosition());
+                if (!isTouchSeekBar) {
+                    currentTimeMusic.setText(simpleDateFormat.format(mediaPlayer.getCurrentPosition()));
+                    //update seekProgress
+                    seekMusic.setProgress(mediaPlayer.getCurrentPosition());
 
-                //kiểm tra bài hát kết thúc
+                    //kiểm tra bài hát kết thúc
 
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        if(position >= tracks.size() - 1) {
-                            onTrackPlay();
-                            onTrackPause();
-                        } else
-                            onTrackNext();
-                    }
-                });
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            if (position >= tracks.size() - 1) {
+                                onTrackPlay();
+                                onTrackPause();
+                            } else
+                                onTrackNext();
+                        }
+                    });
+                }
             handler.postDelayed(this, 500);
             }
         }, 100);
@@ -306,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements PlayAble {
     private void RotateAnimation(int speed) {
         animation.setDuration(speed);
         animation.setRepeatCount(1);
-        //animation.setRepeatMode(speed + 1);
         animation.setZAdjustment(-1);
         pictureMusic.startAnimation(animation);
     }

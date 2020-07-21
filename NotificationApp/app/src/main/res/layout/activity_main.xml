@@ -39,7 +39,7 @@
         android:layout_marginBottom="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bt_play"
-        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintHorizontal_bias="0.77"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_skip_previous_black_24dp" />
 
@@ -50,7 +50,7 @@
         android:layout_marginBottom="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintHorizontal_bias="0.127"
         app:layout_constraintStart_toEndOf="@+id/bt_play"
         app:srcCompat="@drawable/ic_skip_next_black_24dp" />
 
@@ -102,12 +102,34 @@
 
     <ImageButton
         android:id="@+id/activityList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_baseline_format_list_bulleted_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/randomMusic"
+        android:layout_width="28dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="84dp"
+        android:background="@drawable/unrandom"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bt_previous"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/loopMusic"
+        android:layout_width="28dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="84dp"
+        android:background="@drawable/unloop"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_get" />
+        app:layout_constraintStart_toEndOf="@+id/bt_next" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
